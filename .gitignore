@@ -1,0 +1,22 @@
+
+# Executáveis
+*.exe
+*.out
+*.o
+
+# Arquivos de compilação
+*.obj
+
+# Resultados gerados
+output/*
+
+# Arquivos temporários
+*.tmp
+*.bak
+
+# Configurações locais do VS Code
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
