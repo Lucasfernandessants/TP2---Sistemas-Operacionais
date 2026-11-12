@@ -26,7 +26,6 @@ Quadro* inicializarMemoria(unsigned int quantidade_quadros){
     for(unsigned int i=0;i<quantidade_quadros;i++){
         memoria[i].ocupado = 0;
         memoria[i].sujo = 0;
-        memoria[i].pagina = -1;
     }
 
     return memoria;

@@ -11,7 +11,9 @@ SOURCES = src/main.c \
           src/simulador.c \
           src/memoria.c \
           src/arquivo.c \
-          src/tabela_densa.c
+          src/tabela_densa.c \
+		  src/algoritmos/algoritmo.c \
+		  src/algoritmos/lru.c \
 
 all: $(TARGET)
 

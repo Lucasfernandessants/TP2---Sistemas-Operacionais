@@ -3,6 +3,7 @@
 #include "simulador.h"
 #include "memoria.h"
 #include "arquivo.h"
+#include "algoritmos/algoritmo.h"
 
 int main(int argc, char *argv[]){
     if(argc < 5){
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]){
     }
 
     configuracao.tamanho_memoria = atoi(argv[4]);
-    
+
     if (configuracao.tamanho_memoria > 16384 || configuracao.tamanho_memoria < 128)
     {
         printf("Tamanho da memória fora dos limites permitidos!\n");
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]){
 
     FILE *arquivo = fopen(configuracao.arquivo, "r");
     if(arquivo == NULL){
-        printf("Falha ao ler o arquivo!");
+        printf("Falha ao ler o arquivo!\n");
         return 1;
     }
 
@@ -39,12 +40,16 @@ int main(int argc, char *argv[]){
     
     Quadro* memoria = inicializarMemoria(qtd_quadros);
     if(memoria == NULL){
-        printf("Falha ao alocar memória!");
+        printf("Falha ao alocar memória!\n");
         return 1;
     }
 
-    executarSimulacao(arquivo, memoria, configuracao, qtd_quadros);
+    Algoritmo algoritmo = escolherAlgoritmo(configuracao.algoritmo);
+    algoritmo.inicializar(qtd_quadros);
+
+    executarSimulacao(arquivo, memoria, configuracao, qtd_quadros, algoritmo);
     
+    algoritmo.liberar();
     liberarMemoria(memoria);
     fclose(arquivo);
 
