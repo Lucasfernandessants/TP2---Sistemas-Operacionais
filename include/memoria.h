@@ -6,6 +6,7 @@ typedef struct {
     int ocupado;
     int sujo;
     unsigned long long ultimo_acesso;
+    int bit_ref;
 } Quadro;
 
 unsigned int calcularQuantidadeQuadros(unsigned int memoria, unsigned int paginas);

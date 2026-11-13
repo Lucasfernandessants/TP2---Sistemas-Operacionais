@@ -68,5 +68,5 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
 
     }
     liberarTabelaDensa(tabela_densa);
-    //printf("Acessos: %llu\n Escritas: %llu\n Faults: %llu\n", estatisticas.acessos, estatisticas.escritas,estatisticas.faults);
+    printf("Acessos: %llu\n Escritas: %llu\n Faults: %llu\n", estatisticas.acessos, estatisticas.escritas,estatisticas.faults);
 }

@@ -14,7 +14,8 @@ SOURCES = src/main.c \
           src/tabela_densa.c \
 		  src/algoritmos/algoritmo.c \
 		  src/algoritmos/lru.c \
-
+		  src/algoritmos/random.c \
+		  src/algoritmos/clock.c
 all: $(TARGET)
 
 $(TARGET): $(SOURCES) | output
