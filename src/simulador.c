@@ -3,7 +3,7 @@
 #include "simulador.h"
 #include "memoria.h"
 #include "arquivo.h"
-#include "tabela_densa.h"
+#include "tabela_paginas.h"
 
 unsigned int calcularDeslocamento(unsigned int tamanho_pagina){
     return log2(tamanho_pagina * 1024);
@@ -13,16 +13,22 @@ unsigned int determinarPagina(unsigned int endereco, unsigned int s){
     return endereco >> s;
 }
 
-void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao, unsigned int qtd_quadros, Algoritmo algoritmo){
+void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao, unsigned int qtd_quadros, Algoritmo algoritmo, TabelaPaginas tabela){
     Estatisticas estatisticas = {0};
     Acesso acesso;
     int resultado = 2;
     int quadro;
     unsigned int quadros_usados = 0, deslocamento, pagina;
-    TabelaDensa* tabela_densa = inicializarTabelaDensa(configuracao.tamanho_pagina);
+
+    tabela.tabela_atual = tabela.inicializar(configuracao.tamanho_pagina, qtd_quadros);
+    if (tabela.tabela_atual == NULL) {
+        printf("Falha ao inicializar tabela!");
+        return;
+    }
+
     deslocamento = calcularDeslocamento(configuracao.tamanho_pagina);
 
-    if(tabela_densa == NULL){
+    if(tabela.tabela_atual == NULL){
         printf("Falha ao inicializar tabela!\n");
         return;
     }
@@ -41,7 +47,7 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
 
         estatisticas.acessos++;
         pagina = determinarPagina(acesso.endereco, deslocamento);
-        quadro = consultarPagina(tabela_densa, pagina);
+        quadro = tabela.consultar(tabela.tabela_atual, pagina);
 
         if(quadro == -1){
             estatisticas.faults++;
@@ -52,10 +58,10 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
                 quadro = algoritmo.selecionarVitima(memoria, qtd_quadros);
                 if(memoria[quadro].sujo) 
                     estatisticas.escritas++;
-                removerPagina(tabela_densa, memoria[quadro].pagina);
+                tabela.remover(tabela.tabela_atual, memoria[quadro].pagina);
             }
 
-            inserirPagina(tabela_densa, pagina, quadro);
+            tabela.inserir(tabela.tabela_atual, pagina, quadro);
             memoria[quadro].ocupado = 1;
             memoria[quadro].sujo = (acesso.operacao == 'W');
             memoria[quadro].pagina = pagina;
@@ -67,6 +73,6 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
         }
 
     }
-    liberarTabelaDensa(tabela_densa);
+    tabela.liberar(tabela.tabela_atual);
     printf("Acessos: %llu\n Escritas: %llu\n Faults: %llu\n", estatisticas.acessos, estatisticas.escritas,estatisticas.faults);
 }

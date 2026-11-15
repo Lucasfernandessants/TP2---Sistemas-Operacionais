@@ -5,7 +5,7 @@ CFLAGS = -Iinclude -Wall -Wextra
 
 LDLIBS = -lm
 
-TARGET = output/main.exe
+TARGET = simulador
 
 SOURCES = src/main.c \
           src/simulador.c \
@@ -16,7 +16,12 @@ SOURCES = src/main.c \
 		  src/algoritmos/lru.c \
 		  src/algoritmos/random.c \
 		  src/algoritmos/clock.c \
-		  src/algoritmos/optimal.c
+		  src/algoritmos/optimal.c \
+		  src/tabela_hierarquica_2_niveis.c \
+		  src/tabela_paginas.c \
+		  src/tabela_hierarquica_3_niveis.c \
+		  src/tabela_invertida.c
+
 all: $(TARGET)
 
 $(TARGET): $(SOURCES) | output
