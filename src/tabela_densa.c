@@ -13,6 +13,7 @@ TabelaDensa* inicializarTabelaDensa(unsigned int tamanho_pagina){
 
     tabela_densa->quantidade_paginas = pow(2,32)/(tamanho_pagina*1024);
     tabela_densa->quadros = malloc(tabela_densa->quantidade_paginas * sizeof(int));
+    tabela_densa->memoria_ocupada = sizeof(tabela_densa) + (tabela_densa->quantidade_paginas * sizeof(int));
 
     if(tabela_densa->quadros == NULL){
         printf("Falha ao alocar quadros!");

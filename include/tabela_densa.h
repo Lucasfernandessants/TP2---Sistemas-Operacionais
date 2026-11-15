@@ -1,9 +1,12 @@
 #ifndef TABELA_DENSA_H
 #define TABELA_DENSA_H
 
+#include <stddef.h>
 typedef struct {
     int *quadros;
     unsigned int quantidade_paginas;
+
+    size_t memoria_ocupada;
 } TabelaDensa;
 
 TabelaDensa* inicializarTabelaDensa(unsigned int tamanho_pagina);

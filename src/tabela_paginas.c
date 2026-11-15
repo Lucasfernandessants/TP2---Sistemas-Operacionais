@@ -10,29 +10,35 @@
 
 static void* initDensa(unsigned int tam, unsigned int qtd_q) { 
     (void)qtd_q;
-    return inicializarTabelaDensa(tam);}
+    return inicializarTabelaDensa(tam);
+}
 static int consDensa(void* t, unsigned int p) { return consultarPagina((TabelaDensa*) t, p); }
 static void insDensa(void* t, unsigned int p, int q) { return inserirPagina((TabelaDensa*) t, p, q); }
 static void remDensa(void* t, unsigned int p) { removerPagina((TabelaDensa*) t, p); }
 static void libDensa(void* t) { liberarTabelaDensa((TabelaDensa*) t); }
+static size_t memDensa(void* t) {return ((TabelaDensa*) t)->memoria_ocupada; }
 
 
 static void* initTH2(unsigned int tam, unsigned int qtd_q) { 
     (void)qtd_q;
-    return inicializarTH2(tam);}
+    return inicializarTH2(tam);
+}
 static int consTH2(void* t, unsigned int p) { return consultarPaginaTH2((TabelaHierarquica2*) t, p); }
 static void insTH2(void* t, unsigned int p, int q) { return inserirPaginaTH2((TabelaHierarquica2*) t, p, q); }
 static void remTH2(void* t, unsigned int p) { removerPaginaTH2((TabelaHierarquica2*) t, p); }
 static void libTH2(void* t) { liberarTH2((TabelaHierarquica2*) t); }
+static size_t memTH2(void* t) {return ((TabelaHierarquica2*) t)->memoria_ocupada; }
 
 
 static void* initTH3(unsigned int tam, unsigned int qtd_q) { 
     (void)qtd_q;
-    return inicializarTH3(tam);}
+    return inicializarTH3(tam);
+}
 static int consTH3(void* t, unsigned int p) { return consultarPaginaTH3((TabelaHierarquica3*) t, p); }
 static void insTH3(void* t, unsigned int p, int q) { return inserirPaginaTH3((TabelaHierarquica3*) t, p, q); }
 static void remTH3(void* t, unsigned int p) { removerPaginaTH3((TabelaHierarquica3*) t, p); }
 static void libTH3(void* t) { liberarTH3((TabelaHierarquica3*) t); }
+static size_t memTH3(void* t) {return ((TabelaHierarquica3*) t)->memoria_ocupada; }
 
 
 static void* initTI(unsigned int tam, unsigned int qtd_q) { 
@@ -43,6 +49,7 @@ static int consTI(void* t, unsigned int p) { return consultarPaginaTI((TabelaInv
 static void insTI(void* t, unsigned int p, int q) { return inserirPaginaTI((TabelaInvertida*) t, p, q); }
 static void remTI(void* t, unsigned int p) { removerPaginaTI((TabelaInvertida*) t, p); }
 static void libTI(void* t) { liberarTI((TabelaInvertida*) t); }
+static size_t memTI(void* t) {return ((TabelaInvertida*) t)->memoria_ocupada; }
 
 
 TabelaPaginas escolherTabela(const char* nome) {
@@ -55,6 +62,7 @@ TabelaPaginas escolherTabela(const char* nome) {
         tabela.inserir = insDensa;
         tabela.remover = remDensa;
         tabela.liberar = libDensa;
+        tabela.obterMemoria = memDensa;
         return tabela;
     }
 
@@ -64,15 +72,17 @@ TabelaPaginas escolherTabela(const char* nome) {
         tabela.inserir = insTH2;
         tabela.remover = remTH2;
         tabela.liberar = libTH2;
+        tabela.obterMemoria = memTH2;
         return tabela;
     }
-
+    
     if (strcmp(nome, "th3") == 0) {
         tabela.inicializar = initTH3;
         tabela.consultar = consTH3;
         tabela.inserir = insTH3;
         tabela.remover = remTH3;
         tabela.liberar = libTH3;
+        tabela.obterMemoria = memTH3;
         return tabela;
     }
     
@@ -82,6 +92,7 @@ TabelaPaginas escolherTabela(const char* nome) {
         tabela.inserir = insTI;
         tabela.remover = remTI;
         tabela.liberar = libTI;
+        tabela.obterMemoria = memTI;
         return tabela;
     }
 

@@ -8,6 +8,7 @@
  */
 TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
     TabelaHierarquica2* tabela_hierarquica_2 = malloc(sizeof(TabelaHierarquica2));
+    tabela_hierarquica_2->memoria_ocupada = sizeof(TabelaHierarquica2);
 
     if(tabela_hierarquica_2 == NULL){
         printf("Falha ao alocar tabela!");
@@ -23,6 +24,7 @@ TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
     tabela_hierarquica_2->quantidade_paginas_N2 = pow(2, tabela_hierarquica_2->bits_para_pagina_N2);
 
     tabela_hierarquica_2->paginas = malloc(tabela_hierarquica_2->quantidade_paginas_N1 * sizeof(int*));
+    tabela_hierarquica_2->memoria_ocupada += (tabela_hierarquica_2->quantidade_paginas_N1 * sizeof(int*));
 
     if(tabela_hierarquica_2->paginas == NULL){
         printf("Falha ao alocar quadros!");
@@ -68,6 +70,7 @@ void inserirPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pag
     // Alocação sob demanda
     if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
         tabela_hierarquica_2->paginas[pagina_N1] = malloc(tabela_hierarquica_2->quantidade_paginas_N2 * sizeof(int));
+        tabela_hierarquica_2->memoria_ocupada += (tabela_hierarquica_2->quantidade_paginas_N2 * sizeof(int));
         if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
             return;
         }

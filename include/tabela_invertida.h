@@ -1,9 +1,13 @@
 #ifndef TABELA_INVERTIDA_H
 #define TABELA_INVERTIDA_H
 
+#include <stddef.h>
 typedef struct {
     int *paginas;
     unsigned int quantidade_quadros;
+
+    size_t memoria_ocupada;
+
 } TabelaInvertida;
 
 TabelaInvertida* inicializarTI(unsigned int tamanho_pagina);
