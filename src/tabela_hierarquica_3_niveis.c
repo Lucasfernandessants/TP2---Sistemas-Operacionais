@@ -8,6 +8,7 @@
  */
 TabelaHierarquica3* inicializarTH3(unsigned int tamanho_pagina){
     TabelaHierarquica3* tabela_hierarquica_3 = malloc(sizeof(TabelaHierarquica3));
+    tabela_hierarquica_3->memoria_ocupada = sizeof(TabelaHierarquica3);
 
     if(tabela_hierarquica_3 == NULL){
         printf("Falha ao alocar tabela!");
@@ -30,6 +31,7 @@ TabelaHierarquica3* inicializarTH3(unsigned int tamanho_pagina){
 
     // Aloca somente o vetor de ponteiros do primeiro nível.
     tabela_hierarquica_3->paginas = malloc(tabela_hierarquica_3->quantidade_paginas_N1 * sizeof(int**));
+    tabela_hierarquica_3->memoria_ocupada += (tabela_hierarquica_3->quantidade_paginas_N1 * sizeof(int**));
 
     if(tabela_hierarquica_3->paginas == NULL){
         printf("Falha ao alocar quadros!");
@@ -90,6 +92,7 @@ void inserirPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pag
     // Alocação sob demanda da segunda tabela.
     if (tabela_hierarquica_3->paginas[pagina_N1] == NULL) {
         tabela_hierarquica_3->paginas[pagina_N1] = malloc(tabela_hierarquica_3->quantidade_paginas_N2 * sizeof(int*));
+        tabela_hierarquica_3->memoria_ocupada += (tabela_hierarquica_3->quantidade_paginas_N2 * sizeof(int*));
         if (tabela_hierarquica_3->paginas[pagina_N1] == NULL) {
             return;
         }
@@ -102,6 +105,7 @@ void inserirPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pag
     // Alocação sob demanda da terceira tabela.
     if (tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] == NULL) {
         tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] = malloc(tabela_hierarquica_3->quantidade_paginas_N3 * sizeof(int));
+        tabela_hierarquica_3->memoria_ocupada += (tabela_hierarquica_3->quantidade_paginas_N3 * sizeof(int));
         if (tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] == NULL) {
             return;
         }

@@ -1,6 +1,7 @@
 #ifndef TABELA_HIERARQUICA_3_NIVEIS_H
 #define TABELA_HIERARQUICA_3_NIVEIS_H
 
+#include <stddef.h>
 typedef struct {
     int ***paginas;
     unsigned int bits_para_pagina_N1;
@@ -9,6 +10,8 @@ typedef struct {
     unsigned int quantidade_paginas_N1;
     unsigned int quantidade_paginas_N2;
     unsigned int quantidade_paginas_N3;
+
+    size_t memoria_ocupada;
 
 } TabelaHierarquica3;
 
@@ -21,5 +24,6 @@ void inserirPaginaTH3(TabelaHierarquica3* tabela, unsigned int pagina_virtual, i
 void removerPaginaTH3(TabelaHierarquica3* tabela, unsigned int pagina_virtual);
 
 void liberarTH3(TabelaHierarquica3* tabela);
+
 
 #endif

@@ -8,6 +8,7 @@
  */
 TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
     TabelaHierarquica2* tabela_hierarquica_2 = malloc(sizeof(TabelaHierarquica2));
+    tabela_hierarquica_2->memoria_ocupada = sizeof(TabelaHierarquica2);
 
     if(tabela_hierarquica_2 == NULL){
         printf("Falha ao alocar tabela!");
@@ -25,6 +26,7 @@ TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
 
     // Aloca apenas o vetor de ponteiros do primeiro nível; o segundo nível é criado sob demanda.
     tabela_hierarquica_2->paginas = malloc(tabela_hierarquica_2->quantidade_paginas_N1 * sizeof(int*));
+    tabela_hierarquica_2->memoria_ocupada += (tabela_hierarquica_2->quantidade_paginas_N1 * sizeof(int*));
 
     if(tabela_hierarquica_2->paginas == NULL){
         printf("Falha ao alocar quadros!");
@@ -72,6 +74,7 @@ void inserirPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pag
     // Cria o segundo nível somente quando uma página daquele intervalo é inserida.
     if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
         tabela_hierarquica_2->paginas[pagina_N1] = malloc(tabela_hierarquica_2->quantidade_paginas_N2 * sizeof(int));
+        tabela_hierarquica_2->memoria_ocupada += (tabela_hierarquica_2->quantidade_paginas_N2 * sizeof(int));
         if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
             return;
         }

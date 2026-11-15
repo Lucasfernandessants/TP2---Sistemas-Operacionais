@@ -1,11 +1,18 @@
+#define _POSIX_C_SOURCE 199309L
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 #include "simulador.h"
 #include "memoria.h"
 #include "arquivo.h"
 #include "tabela_paginas.h"
 
+static double calcularTempo(struct timespec inicio, struct timespec fim) {
+    return (fim.tv_sec - inicio.tv_sec) * 1000.0 + (fim.tv_nsec - inicio.tv_nsec) / 1e6;
+}
+
 // Calcula a quantidade de bits necessária para representar o deslocamento dentro da página.
+
 unsigned int calcularDeslocamento(unsigned int tamanho_pagina){
     return log2(tamanho_pagina * 1024);
 }
@@ -24,7 +31,14 @@ static void imprimirQuadros(Quadro* memoria, unsigned int quadros_usados){
     }
 }
 
-void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao, unsigned int qtd_quadros, Algoritmo algoritmo, TabelaPaginas tabela){
+void executarSimulacao(FILE* arquivo
+    , Quadro* memoria
+    , Configuracao configuracao
+    , unsigned int qtd_quadros
+    , Algoritmo algoritmo
+    , TabelaPaginas tabela
+) {
+    
     Estatisticas estatisticas = {0}; // Inicializa todas as estatísticas com zero.
     Acesso acesso;
     int resultado = 2;
@@ -40,11 +54,16 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
 
     // Calcula quantos bits devem ser deslocados para obter o número da página.
     deslocamento = calcularDeslocamento(configuracao.tamanho_pagina);
-
+    
     if(tabela.tabela_atual == NULL){
         printf("Falha ao inicializar tabela!\n");
         return;
     }
+
+    struct timespec inicio_global, fim_global, inicio_consulta, fim_consulta;
+    double tempo_consultas_ms = 0.0;
+
+    clock_gettime(CLOCK_MONOTONIC, &inicio_global);
 
     // Processa os acessos ao arquivo enquanto houver registros válidos.
     while(resultado  == 2){
@@ -62,12 +81,16 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
 
         estatisticas.acessos++; // Contabiliza o acesso atual.
         pagina = determinarPagina(acesso.endereco, deslocamento); // Identifica a página acessada.
+
+        clock_gettime(CLOCK_MONOTONIC, &inicio_consulta);
         quadro = tabela.consultar(tabela.tabela_atual, pagina); // Verifica se a página está na memória.
+        clock_gettime(CLOCK_MONOTONIC, &fim_consulta);
+        tempo_consultas_ms += calcularTempo(inicio_consulta, fim_consulta);
 
         // Exibe os dados do acesso atual quando o modo debug está ativo.
         if(configuracao.debug)
             printf("#%llu %08x %c -> pagina 0x%x: ",
-                   estatisticas.acessos, acesso.endereco, acesso.operacao, pagina);
+                estatisticas.acessos, acesso.endereco, acesso.operacao, pagina);
 
         if(quadro == -1){
             estatisticas.faults++; // Contabiliza uma falta de página.
@@ -81,8 +104,8 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
                 quadro = algoritmo.selecionarVitima(memoria, qtd_quadros);
                 if(configuracao.debug)
                     printf("FAULT, memoria cheia, vitima: quadro %d (pagina 0x%x%s)\n",
-                           quadro, memoria[quadro].pagina,
-                           memoria[quadro].sujo ? ", suja: escrita em disco" : "");
+                            quadro, memoria[quadro].pagina,
+                            memoria[quadro].sujo ? ", suja: escrita em disco" : "");
                 if(memoria[quadro].sujo)
                     estatisticas.escritas++; // Contabiliza a escrita da página suja em disco.
                 tabela.remover(tabela.tabela_atual, memoria[quadro].pagina); // Remove a página substituída da tabela.
@@ -99,7 +122,7 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
             // Página encontrada na memória: ocorre um HIT.
             if(configuracao.debug)
                 printf("HIT, quadro %d%s\n", quadro,
-                       acesso.operacao == 'W' ? " (escrita: marcada suja)" : "");
+                        acesso.operacao == 'W' ? " (escrita: marcada suja)" : "");
             if (acesso.operacao == 'W') memoria[quadro].sujo = 1; // Marca a página como suja em caso de escrita.
             algoritmo.acessarPagina(memoria, quadro, estatisticas.acessos); // Atualiza o estado do algoritmo após o acesso.
         }
@@ -110,7 +133,13 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
     }
 
     // Libera a tabela de páginas e apresenta as estatísticas finais da simulação.
+
+    clock_gettime(CLOCK_MONOTONIC, &fim_global);
+    double tempo_global = calcularTempo(inicio_global, fim_global);
+    size_t memoria_ocupada = tabela.obterMemoria(tabela.tabela_atual);
+
     tabela.liberar(tabela.tabela_atual);
+
     printf("Executando o simulador...\n");
     printf("Arquivo de entrada: %s\n", configuracao.arquivo);
     printf("Tamanho da memória: %u KB\n", (unsigned int)configuracao.tamanho_memoria);
@@ -119,4 +148,7 @@ void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao
     printf("Total de acessos à memória: %llu\n", estatisticas.acessos);
     printf("Páginas lidas: %llu\n", estatisticas.faults);
     printf("Páginas escritas: %llu\n", estatisticas.escritas);
+    printf("Memória da tabela: %zu Bytes\n", memoria_ocupada);
+    printf("Tempo de consulta: %.3f ms\n", tempo_consultas_ms);
+    printf("Tempo total: %.3f ms\n", tempo_global);
 }

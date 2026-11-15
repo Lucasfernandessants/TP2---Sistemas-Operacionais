@@ -6,6 +6,7 @@
 // Cria uma entrada por quadro físico; cada posição guarda a página nele armazenada.
 TabelaInvertida* inicializarTI(unsigned int quantidade_quadros){
     TabelaInvertida* tabela = malloc(sizeof(TabelaInvertida));
+    tabela->memoria_ocupada = sizeof(TabelaInvertida);
 
     if(tabela == NULL){
         printf("Falha ao alocar tabela!");
@@ -14,6 +15,7 @@ TabelaInvertida* inicializarTI(unsigned int quantidade_quadros){
 
     tabela->quantidade_quadros = quantidade_quadros;
     tabela->paginas = malloc(quantidade_quadros * sizeof(int));
+    tabela->memoria_ocupada += (quantidade_quadros * sizeof(int));
 
     if(tabela->paginas == NULL){
         printf("Falha ao alocar paginas!");
