@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 Algoritmo criarClock(){
-    printf("Algoritmo escolhido: clock!\n");
     Algoritmo algoritmo;
     algoritmo.estado = NULL;
     algoritmo.inicializar = clockInicializar;
@@ -21,7 +20,7 @@ void clockInicializar(unsigned int qtd_quadros, Configuracao configuracao){
 }
 
 void clockAcessarPagina(Quadro *memoria, int quadro, unsigned long long tempo){
-    memoria[quadro].bit_ref = 1;
+    memoria[quadro].bit_ref = 1; // Marca a página como recentemente utilizada.
 }
 
 void clockCarregarPagina(Quadro *memoria, int quadro, unsigned long long tempo){
@@ -35,6 +34,7 @@ int clockSelecionarVitima(Quadro *memoria, unsigned int qtd_quadros){
             ponto = (i+1 == qtd_quadros) ? 0 : i+1;
             return i;
         }
+        // Concede uma segunda chance à página, zerando seu bit de referência.
         memoria[i].bit_ref = 0;
         i++;
         if (i == qtd_quadros)

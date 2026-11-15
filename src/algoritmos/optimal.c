@@ -5,7 +5,6 @@
 #include "simulador.h"
 
 Algoritmo criarOpt(){
-    printf("Algoritmo escolhido: opt!\n");
     Algoritmo algoritmo;
     algoritmo.estado = NULL;
     algoritmo.inicializar = optInicializar;
@@ -30,6 +29,7 @@ void optInicializar(unsigned int qtd_quadros, Configuracao configuracao){
     int resultado = 2, contador = 0;
     unsigned int deslocamento = calcularDeslocamento(configuracao.tamanho_pagina);
 
+    // Primeiro percorre o arquivo para descobrir a quantidade total de acessos.
     while(1){
         resultado = lerAcesso(arquivo, &acesso);
 
@@ -48,6 +48,7 @@ void optInicializar(unsigned int qtd_quadros, Configuracao configuracao){
     unsigned int *paginas = malloc(qtd_acessos * sizeof(unsigned int));
     contador = 0;
 
+    // Armazena a sequência de páginas acessadas para calcular seus próximos usos.
     while(resultado  == 2){
         resultado = lerAcesso(arquivo, &acesso);
 
@@ -67,11 +68,13 @@ void optInicializar(unsigned int qtd_quadros, Configuracao configuracao){
     unsigned int *ultima = malloc(qtd_paginas * sizeof(unsigned int));
     proximos = malloc(qtd_acessos * sizeof(unsigned int));
 
+    // Inicializa as páginas como se não fossem acessadas novamente.
     for(unsigned int i = 0; i<qtd_paginas; i++){
         ultima[i] = qtd_acessos;
     }
 
-    for(int i = (int)qtd_acessos; i >= 0; i--){
+    // Percorre os acessos de trás para frente para encontrar a próxima ocorrência de cada página.
+    for(int i = (int)qtd_acessos -1; i >= 0; i--){
         proximos[i] = ultima[paginas[i]];
         ultima[paginas[i]] = i;
     }

@@ -14,6 +14,7 @@ TabelaHierarquica3* inicializarTH3(unsigned int tamanho_pagina){
         return NULL;
     }
 
+    // Distribui os bits do número da página entre os três níveis hierárquicos.
     unsigned int bits_offset = log2(tamanho_pagina * 1024);
     unsigned int bits_para_paginas = 32 - bits_offset;
 
@@ -27,6 +28,7 @@ TabelaHierarquica3* inicializarTH3(unsigned int tamanho_pagina){
     tabela_hierarquica_3->quantidade_paginas_N2 = pow(2, tabela_hierarquica_3->bits_para_pagina_N2); 
     tabela_hierarquica_3->quantidade_paginas_N3 = pow(2, tabela_hierarquica_3->bits_para_pagina_N3); 
 
+    // Aloca somente o vetor de ponteiros do primeiro nível.
     tabela_hierarquica_3->paginas = malloc(tabela_hierarquica_3->quantidade_paginas_N1 * sizeof(int**));
 
     if(tabela_hierarquica_3->paginas == NULL){
@@ -42,14 +44,15 @@ TabelaHierarquica3* inicializarTH3(unsigned int tamanho_pagina){
     return tabela_hierarquica_3;
 }
 
+// Divide o número da página em três índices para percorrer a hierarquia.
 int consultarPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pagina_virtual){
-    // Jogando os bit N - 2 * N / 3 vezes para a direita
+    // Jogando os bit N - 2 * N / 3 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual 
                                 >> tabela_hierarquica_3->bits_para_pagina_N2
                                 >> tabela_hierarquica_3->bits_para_pagina_N3;
-    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits 
+    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits.
     unsigned int pagina_N2 = pagina_virtual >> tabela_hierarquica_3->bits_para_pagina_N3 & (((1U << tabela_hierarquica_3->bits_para_pagina_N2) - 1));
-    // Pegando apenas os N - N / 3 últimos bits
+    // Pegando apenas os N - N / 3 últimos bits.
     unsigned int pagina_N3 = pagina_virtual & ((1U << tabela_hierarquica_3->bits_para_pagina_N3) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_3->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_3->quantidade_paginas_N2 || pagina_N3 >= tabela_hierarquica_3->quantidade_paginas_N3) {
@@ -64,25 +67,27 @@ int consultarPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pa
         return -1;
     }
 
+    // Retorna o quadro físico associado à página consultada.
     return tabela_hierarquica_3->paginas[pagina_N1][pagina_N2][pagina_N3];
 }
 
 // Alocamos somente sob demanda a segunda tabela e o mesmo vale para a terceira tabela;
 void inserirPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pagina_virtual, int quadro_fisico){
-    // Jogando os bit N - 2 * N / 3 vezes para a direita
+    // Jogando os bit N - 2 * N / 3 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual 
                                 >> tabela_hierarquica_3->bits_para_pagina_N2
                                 >> tabela_hierarquica_3->bits_para_pagina_N3;
-    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits 
+    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits. 
     unsigned int pagina_N2 = pagina_virtual >> tabela_hierarquica_3->bits_para_pagina_N3 & (((1U << tabela_hierarquica_3->bits_para_pagina_N2) - 1));
-    // Pegando apenas os N - N / 3 últimos bits
+    // Pegando apenas os N - N / 3 últimos bits.
     unsigned int pagina_N3 = pagina_virtual & ((1U << tabela_hierarquica_3->bits_para_pagina_N3) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_3->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_3->quantidade_paginas_N2 || pagina_N3 >= tabela_hierarquica_3->quantidade_paginas_N3) {
         return;
     }
 
-    // Alocação sob demanda da segunda tabela
+    // Cria o segundo nível apenas quando uma página desse intervalo é inserida.
+    // Alocação sob demanda da segunda tabela.
     if (tabela_hierarquica_3->paginas[pagina_N1] == NULL) {
         tabela_hierarquica_3->paginas[pagina_N1] = malloc(tabela_hierarquica_3->quantidade_paginas_N2 * sizeof(int*));
         if (tabela_hierarquica_3->paginas[pagina_N1] == NULL) {
@@ -93,7 +98,8 @@ void inserirPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pag
         }
     }
     
-    // Alocação sob demanda da terceira tabela
+    // Cria o terceiro nível apenas para a combinação de índices utilizada.
+    // Alocação sob demanda da terceira tabela.
     if (tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] == NULL) {
         tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] = malloc(tabela_hierarquica_3->quantidade_paginas_N3 * sizeof(int));
         if (tabela_hierarquica_3->paginas[pagina_N1][pagina_N2] == NULL) {
@@ -108,13 +114,13 @@ void inserirPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pag
 }
 
 void removerPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pagina_virtual){
-    // Jogando os bit N - 2 * N / 3 vezes para a direita
+    // Jogando os bit N - 2 * N / 3 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual 
                                 >> tabela_hierarquica_3->bits_para_pagina_N2
                                 >> tabela_hierarquica_3->bits_para_pagina_N3;
-    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits 
+    // Jogando os bit N - N / 3 vezes para direita e pegando apenas os apenas os N - N / 3 bits últimos bits. 
     unsigned int pagina_N2 = pagina_virtual >> tabela_hierarquica_3->bits_para_pagina_N3 & (((1U << tabela_hierarquica_3->bits_para_pagina_N2) - 1));
-    // Pegando apenas os N - N / 3 últimos bits
+    // Pegando apenas os N - N / 3 últimos bits.
     unsigned int pagina_N3 = pagina_virtual & ((1U << tabela_hierarquica_3->bits_para_pagina_N3) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_3->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_3->quantidade_paginas_N2 || pagina_N3 >= tabela_hierarquica_3->quantidade_paginas_N3) {
@@ -134,6 +140,7 @@ void removerPaginaTH3(TabelaHierarquica3* tabela_hierarquica_3, unsigned int pag
     tabela_hierarquica_3->paginas[pagina_N1][pagina_N2][pagina_N3] = -1;
 }
 
+// Percorre os níveis e libera todas as tabelas alocadas dinamicamente.
 void liberarTH3(TabelaHierarquica3* tabela_hierarquica_3){
     if(tabela_hierarquica_3 == NULL)
         return;

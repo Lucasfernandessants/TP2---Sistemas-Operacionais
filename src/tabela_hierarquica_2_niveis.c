@@ -14,6 +14,7 @@ TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
         return NULL;
     }
 
+    // Divide os bits do número da página entre os dois níveis da tabela.
     unsigned int bits_offset = log2(tamanho_pagina * 1024);
     unsigned int bits_para_paginas = 32 - bits_offset;
 
@@ -22,6 +23,7 @@ TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
     tabela_hierarquica_2->quantidade_paginas_N1 = pow(2, tabela_hierarquica_2->bits_para_pagina_N1);
     tabela_hierarquica_2->quantidade_paginas_N2 = pow(2, tabela_hierarquica_2->bits_para_pagina_N2);
 
+    // Aloca apenas o vetor de ponteiros do primeiro nível; o segundo nível é criado sob demanda.
     tabela_hierarquica_2->paginas = malloc(tabela_hierarquica_2->quantidade_paginas_N1 * sizeof(int*));
 
     if(tabela_hierarquica_2->paginas == NULL){
@@ -37,10 +39,11 @@ TabelaHierarquica2* inicializarTH2(unsigned int tamanho_pagina){
     return tabela_hierarquica_2;
 }
 
+// Separa o número da página em índices para localizar sua entrada nos dois níveis.
 int consultarPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pagina_virtual){
-    // Jogando os bit N - N / 2 vezes para a direita
+    // Jogando os bit N - N / 2 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual >> tabela_hierarquica_2->bits_para_pagina_N2;
-    // Pegando apenas os N - N / 2 últimos bits 
+    // Pegando apenas os N - N / 2 últimos bits. 
     unsigned int pagina_N2 = pagina_virtual & ((1U << tabela_hierarquica_2->bits_para_pagina_N2) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_2->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_2->quantidade_paginas_N2) {
@@ -51,21 +54,22 @@ int consultarPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pa
         return - 1;
     }
 
+    // Retorna o quadro físico associado à página, ou -1 se ela não estiver mapeada.
     return tabela_hierarquica_2->paginas[pagina_N1][pagina_N2];
 }
 
 // Alocamos somente sob demanda a segunda tabela;
 void inserirPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pagina_virtual, int quadro_fisico){
-    // Jogando os bit N - N / 2 vezes para a direita
+    // Jogando os bit N - N / 2 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual >> tabela_hierarquica_2->bits_para_pagina_N2;
-    // Pegando apenas os N - N / 2 últimos bits 
+    // Pegando apenas os N - N / 2 últimos bits.
     unsigned int pagina_N2 = pagina_virtual & ((1U << tabela_hierarquica_2->bits_para_pagina_N2) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_2->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_2->quantidade_paginas_N2) {
         return;
     }
 
-    // Alocação sob demanda
+    // Cria o segundo nível somente quando uma página daquele intervalo é inserida.
     if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
         tabela_hierarquica_2->paginas[pagina_N1] = malloc(tabela_hierarquica_2->quantidade_paginas_N2 * sizeof(int));
         if (tabela_hierarquica_2->paginas[pagina_N1] == NULL) {
@@ -80,9 +84,9 @@ void inserirPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pag
 }
 
 void removerPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pagina_virtual){
-    // Jogando os bit N - N / 2 vezes para a direita
+    // Jogando os bit N - N / 2 vezes para a direita.
     unsigned int pagina_N1 = pagina_virtual >> tabela_hierarquica_2->bits_para_pagina_N2;
-    // Pegando apenas os N - N / 2 últimos bits 
+    // Pegando apenas os N - N / 2 últimos bits. 
     unsigned int pagina_N2 = pagina_virtual & ((1U << tabela_hierarquica_2->bits_para_pagina_N2) - 1);
 
     if (pagina_N1 >= tabela_hierarquica_2->quantidade_paginas_N1 || pagina_N2 >= tabela_hierarquica_2->quantidade_paginas_N2) {
@@ -99,6 +103,7 @@ void removerPaginaTH2(TabelaHierarquica2* tabela_hierarquica_2, unsigned int pag
     tabela_hierarquica_2->paginas[pagina_N1][pagina_N2] = -1;
 }
 
+// Libera cada tabela de segundo nível alocada e, por fim, a estrutura principal.
 void liberarTH2(TabelaHierarquica2* tabela_hierarquica_2){
     if(tabela_hierarquica_2 == NULL)
         return;

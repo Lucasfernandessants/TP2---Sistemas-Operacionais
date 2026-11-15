@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 
+// Adaptadores padronizam as assinaturas das operações das diferentes tabelas.
 static void* initDensa(unsigned int tam, unsigned int qtd_q) { 
     (void)qtd_q;
     return inicializarTabelaDensa(tam);}
@@ -35,6 +36,7 @@ static void remTH3(void* t, unsigned int p) { removerPaginaTH3((TabelaHierarquic
 static void libTH3(void* t) { liberarTH3((TabelaHierarquica3*) t); }
 
 
+// A tabela invertida depende da quantidade de quadros, não do tamanho da página.
 static void* initTI(unsigned int tam, unsigned int qtd_q) { 
     (void)tam;
     return inicializarTI(qtd_q);
@@ -45,10 +47,12 @@ static void remTI(void* t, unsigned int p) { removerPaginaTI((TabelaInvertida*) 
 static void libTI(void* t) { liberarTI((TabelaInvertida*) t); }
 
 
+// Associa o nome informado às funções da implementação de tabela correspondente.
 TabelaPaginas escolherTabela(const char* nome) {
     TabelaPaginas tabela;
     tabela.tabela_atual = NULL;
 
+    // Configura os ponteiros de função para a implementação densa.
     if (strcmp(nome, "densa") == 0) {
         tabela.inicializar = initDensa;
         tabela.consultar = consDensa;
@@ -58,6 +62,7 @@ TabelaPaginas escolherTabela(const char* nome) {
         return tabela;
     }
 
+    // Configura os ponteiros de função para a tabela hierárquica de dois níveis.
     if (strcmp(nome, "th2") == 0) {
         tabela.inicializar = initTH2;
         tabela.consultar = consTH2;
@@ -67,6 +72,7 @@ TabelaPaginas escolherTabela(const char* nome) {
         return tabela;
     }
 
+    // Configura os ponteiros de função para a tabela hierárquica de três níveis.
     if (strcmp(nome, "th3") == 0) {
         tabela.inicializar = initTH3;
         tabela.consultar = consTH3;
@@ -76,6 +82,7 @@ TabelaPaginas escolherTabela(const char* nome) {
         return tabela;
     }
     
+    // Configura os ponteiros de função para a tabela invertida.
     if (strcmp(nome, "invertida") == 0) {
         tabela.inicializar = initTI;
         tabela.consultar = consTI;
@@ -85,6 +92,6 @@ TabelaPaginas escolherTabela(const char* nome) {
         return tabela;
     }
 
-    printf("Tipo de tabela não existente! Tipos existentes: [densa | th2 | th3 | invertida]");
+    printf("Tipo de tabela não existente! Tipos existentes: [densa | th2 | th3 | invertida]\n");
     exit(1);
 }

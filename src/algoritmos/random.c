@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 Algoritmo criarRandom(){
-    printf("Algoritmo escolhido: random!\n");
     Algoritmo algoritmo;
     algoritmo.estado = NULL;
     algoritmo.inicializar = randomInicializar;
@@ -15,7 +14,7 @@ Algoritmo criarRandom(){
 }
 
 void randomInicializar(unsigned int qtd_quadros, Configuracao configuracao){
-    srandom(42);
+    srandom(42); // Define uma semente fixa para tornar os resultados reproduzíveis.
 }
 
 void randomAcessarPagina(Quadro *memoria, int quadro, unsigned long long tempo){
@@ -25,7 +24,7 @@ void randomCarregarPagina(Quadro *memoria, int quadro, unsigned long long tempo)
 }
 
 int randomSelecionarVitima(Quadro *memoria, unsigned int qtd_quadros){
-    return random() % qtd_quadros;
+    return random() % qtd_quadros; // Escolhe aleatoriamente um quadro para substituição.
 }
 
 void randomLiberar(void){

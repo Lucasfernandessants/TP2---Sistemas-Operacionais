@@ -6,6 +6,7 @@ typedef struct {
     char *arquivo;
     unsigned int tamanho_pagina;
     unsigned int tamanho_memoria;
+    int debug;
 } Configuracao;
 
 #endif
