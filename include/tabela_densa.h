@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 typedef struct {
-    int *quadros;
+    int *paginas;
     unsigned int quantidade_paginas;
 
     size_t memoria_ocupada;
