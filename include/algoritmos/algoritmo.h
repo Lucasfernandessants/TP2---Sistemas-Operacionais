@@ -3,10 +3,11 @@
 
 #include "memoria.h"
 #include <string.h>
+#include "configuracao.h"
 
 typedef struct {
     void* estado;
-    void (*inicializar)(unsigned int qtd_quadros);
+    void (*inicializar)(unsigned int qtd_quadros, Configuracao configuracao);
     void (*acessarPagina)(Quadro *memoria, int quadro, unsigned long long tempo);
     void (*carregarPagina)(Quadro *memoria, int quadro, unsigned long long tempo);
     int (*selecionarVitima)(Quadro *memoria, unsigned int qtd_quadros);

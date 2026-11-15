@@ -5,7 +5,7 @@
 
 Algoritmo criarLRU();
 
-void lruInicializar(unsigned int qtd_quadros);
+void lruInicializar(unsigned int qtd_quadros, Configuracao configuracao);
 
 void lruAcessarPagina(Quadro *memoria, int quadro, unsigned long long tempo);
 

@@ -5,7 +5,7 @@
 
 Algoritmo criarClock();
 
-void clockInicializar(unsigned int qtd_quadros);
+void clockInicializar(unsigned int qtd_quadros, Configuracao configuracao);
 
 void clockAcessarPagina(Quadro *memoria, int quadro, unsigned long long tempo);
 

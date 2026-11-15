@@ -4,13 +4,7 @@
 #include <stdio.h>
 #include "memoria.h"
 #include "algoritmos/algoritmo.h"
-
-typedef struct {
-    char *algoritmo;
-    char *arquivo;
-    unsigned int tamanho_pagina;
-    unsigned int tamanho_memoria;
-} Configuracao;
+#include "configuracao.h"
 
 typedef struct {
     unsigned long long acessos;

@@ -4,6 +4,7 @@
 #include "memoria.h"
 #include "arquivo.h"
 #include "algoritmos/algoritmo.h"
+#include "configuracao.h"
 
 int main(int argc, char *argv[]){
     if(argc < 5){
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
     }
 
     Algoritmo algoritmo = escolherAlgoritmo(configuracao.algoritmo);
-    algoritmo.inicializar(qtd_quadros);
+    algoritmo.inicializar(qtd_quadros, configuracao);
 
     executarSimulacao(arquivo, memoria, configuracao, qtd_quadros, algoritmo);
     

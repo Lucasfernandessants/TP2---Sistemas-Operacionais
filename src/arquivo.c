@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "arquivo.h"
 
 int lerAcesso(FILE *arquivo, Acesso *acesso){

@@ -16,7 +16,7 @@ Algoritmo criarClock(){
 
 static int ponto;
 
-void clockInicializar(unsigned int qtd_quadros){
+void clockInicializar(unsigned int qtd_quadros, Configuracao configuracao){
     ponto = 0;
 }
 

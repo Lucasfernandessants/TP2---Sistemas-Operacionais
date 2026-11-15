@@ -5,7 +5,7 @@
 
 Algoritmo criarRandom();
 
-void randomInicializar(unsigned int qtd_quadros);
+void randomInicializar(unsigned int qtd_quadros, Configuracao configuracao);
 
 void randomAcessarPagina(Quadro *memoria, int quadro, unsigned long long tempo);
 

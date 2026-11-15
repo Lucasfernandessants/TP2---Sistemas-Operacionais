@@ -14,7 +14,7 @@ Algoritmo criarRandom(){
     return algoritmo;
 }
 
-void randomInicializar(unsigned int qtd_quadros){
+void randomInicializar(unsigned int qtd_quadros, Configuracao configuracao){
     srandom(42);
 }
 

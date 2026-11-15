@@ -15,7 +15,8 @@ SOURCES = src/main.c \
 		  src/algoritmos/algoritmo.c \
 		  src/algoritmos/lru.c \
 		  src/algoritmos/random.c \
-		  src/algoritmos/clock.c
+		  src/algoritmos/clock.c \
+		  src/algoritmos/optimal.c
 all: $(TARGET)
 
 $(TARGET): $(SOURCES) | output
