@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "memoria.h"
 #include "algoritmos/algoritmo.h"
+#include "tabela_paginas.h"
 
 typedef struct {
     char *algoritmo;
@@ -22,5 +23,5 @@ unsigned int calcularDeslocamento(unsigned int tamanho_pagina);
 
 unsigned int determinarPagina(unsigned int endereco, unsigned int s);
 
-void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao, unsigned int qtd_quadros, Algoritmo algoritmo);
+void executarSimulacao(FILE* arquivo, Quadro* memoria, Configuracao configuracao, unsigned int qtd_quadros, Algoritmo algoritmo, TabelaPaginas tabela);
 #endif

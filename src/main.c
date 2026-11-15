@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include "simulador.h"
 #include "memoria.h"
-#include "arquivo.h"
 #include "algoritmos/algoritmo.h"
+#include "tabela_paginas.h"
 
 int main(int argc, char *argv[]){
-    if(argc < 5){
-        printf("Poucos argumentos fornecidos!\n");
+    if(argc < 5 || argc > 6){
+        printf("Argumentos incorretos: ./simulador <algoritmo> <arquivo> <tam_pagina> <tam_memoria> [densa|th2|th3|invertida]\n");
         return 1;
     }
+
+    const char* tipo_tabela = (argc == 6) ? argv[5] : "th2";
     
     Configuracao configuracao;
     configuracao.algoritmo = argv[1];
@@ -47,7 +49,8 @@ int main(int argc, char *argv[]){
     Algoritmo algoritmo = escolherAlgoritmo(configuracao.algoritmo);
     algoritmo.inicializar(qtd_quadros);
 
-    executarSimulacao(arquivo, memoria, configuracao, qtd_quadros, algoritmo);
+    TabelaPaginas tabela = escolherTabela(tipo_tabela);
+    executarSimulacao(arquivo, memoria, configuracao, qtd_quadros, algoritmo, tabela);
     
     algoritmo.liberar();
     liberarMemoria(memoria);
