@@ -5,7 +5,7 @@ CFLAGS = -Iinclude -Wall -Wextra
 
 LDLIBS = -lm
 
-TARGET = simulador
+TARGET = output/simulador
 
 SOURCES = src/main.c \
           src/simulador.c \
